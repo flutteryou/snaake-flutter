@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flame/components/component.dart';
+import 'package:flame/components.dart';
 
 import '../models/snake.dart';
 import '../models/vec2d.dart';
@@ -16,7 +16,7 @@ class SnakeComponent extends Component {
   /// The tile size. Use to draw the snake.
   final double tileSize;
 
-  List<BoardComponent> _snakeBody;
+  List<BoardComponent>? _snakeBody;
 
   BoardComponent _buildHead(Vec2d current, Vec2d prev) {
     final imageRotation = pi / 2;
@@ -98,11 +98,11 @@ class SnakeComponent extends Component {
   @override
   void render(Canvas canvas) {
     if (_snakeBody != null) {
-      for (var part in _snakeBody.skip(1)) {
+      for (var part in _snakeBody!.skip(1)) {
         part.render(canvas);
       }
 
-      _snakeBody.first.render(canvas);
+      _snakeBody!.first.render(canvas);
     }
   }
 

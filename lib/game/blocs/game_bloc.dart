@@ -22,15 +22,20 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     this.snakeInitialLength = 4,
     this.updatePeriod = 150,
   })  : assert(random != null),
-        assert(snakeInitialLength >= 4) {
+        assert(snakeInitialLength >= 4),
+        super(GameState(
+        Vec2d(0, -1),
+        status: Status.loading,
+          score: 0,
+        )) {
     add(LoadAssetsEvent());
   }
 
   /// Flame wrapper.
-  final IFlameManager flameManager;
+  final IFlameManager? flameManager;
 
   /// Random generator. Used to create a random food position.
-  final Random random;
+  final Random? random;
 
   /// The snake initial length. Default value is 4.
   final int snakeInitialLength;
@@ -38,17 +43,8 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   /// The game update period in milliseconds.
   final int updatePeriod;
 
-  @override
-  GameState get initialState {
-    return GameState(
-      status: Status.loading,
-      score: 0,
-      velocity: Vec2d(0, -1),
-    );
-  }
-
   Future<void> _preloadAssets() async {
-    await flameManager?.setup();
+    flameManager?.setup();
   }
 
   void _startGame() {
@@ -65,16 +61,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   }
 
   Snake _newSnake() {
-    final x = state.board.width ~/ 2;
-    final y = state.board.height ~/ 2;
+    final x = state.board!.width ~/ 2;
+    final y = state.board!.height ~/ 2;
     return Snake.fromPosition(x, y, snakeInitialLength);
   }
 
   Food _getRandomFood() {
     return Food(
-      x: random.nextInt(state.board.width),
-      y: random.nextInt(state.board.height),
-      score: 1,
+      random!.nextInt(state.board!.width),
+      random!.nextInt(state.board!.height),
+      1,
     );
   }
 
@@ -86,16 +82,16 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     var status = state.status;
 
     // Check if the snake hit the wall
-    if ((newSnake.head.x >= state.board.width || newSnake.head.x < 0) ||
-        (newSnake.head.y >= state.board.height || newSnake.head.y < 0)) {
-      newSnake = oldSnake;
+    if ((newSnake.head.x >= state.board!.width || newSnake.head.x < 0) ||
+        (newSnake.head.y >= state.board!.height || newSnake.head.y < 0)) {
+      newSnake = oldSnake!;
       status = Status.gameOver;
     } else if (oldSnake?.hasBittenItself() ?? false) {
-      newSnake = oldSnake;
+      newSnake = oldSnake!;
       status = Status.gameOver;
     } else {
       if (newSnake.canEat(food)) {
-        score += food.score;
+        score += food!.score;
         newSnake = newSnake.eat(food.x, food.y);
         food = null;
       }
@@ -111,9 +107,9 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     );
   }
 
-  Vec2d _handleDirection(OnKeyPressedEvent event) {
+  Vec2d? _handleDirection(OnKeyPressedEvent event) {
     final pressedKey = event.key.keyId;
-    Vec2d newDirection;
+    Vec2d? newDirection;
 
     if (pressedKey == LogicalKeyboardKey.arrowRight.keyId) {
       newDirection = Vec2d(1, 0);
@@ -127,7 +123,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
 
     // Block opposite directions
     if (newDirection != null && (state.velocity.x + newDirection.x == 0) ||
-        (state.velocity.y + newDirection.y == 0)) {
+        (state.velocity.y + newDirection!.y == 0)) {
       newDirection = null;
     }
 
@@ -143,7 +139,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         }
         break;
       case OnKeyPressedEvent:
-        final newDirection = _handleDirection(event);
+        final newDirection = _handleDirection(event as OnKeyPressedEvent);
         if (newDirection != null) {
           yield state.copyWith(velocity: newDirection);
         }

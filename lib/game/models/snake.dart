@@ -22,7 +22,7 @@ class Snake extends Equatable {
   Vec2d get head => body.first;
 
   /// Check if Snake can eat a food, given is position [food].
-  bool canEat(Vec2d food) {
+  bool canEat(Vec2d? food) {
     return food != null && head.x == food.x && head.y == food.y;
   }
 

@@ -6,10 +6,10 @@ class Vec2d extends Equatable {
   Vec2d(this.x, this.y);
 
   /// The vector x position.
-  final int x;
+  int x = 0;
 
   /// The vector y position.
-  final int y;
+  int y = 0;
 
   @override
   List<Object> get props => [x, y];
@@ -17,8 +17,8 @@ class Vec2d extends Equatable {
   /// Creates a copy of the current [Vec2d].
   /// It may also be used to get a copy of it changing one of its fields.
   Vec2d copyWith({
-    int x,
-    int y,
+    int? x,
+    int? y,
   }) {
     return Vec2d(
       x ?? this.x,

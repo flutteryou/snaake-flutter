@@ -1,3 +1,4 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +17,7 @@ import '../widgets/pause_widget.dart';
 class GameScreen extends StatelessWidget {
   /// Convenient constructor.
   GameScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final FocusNode _focusNode = FocusNode();
@@ -43,7 +44,6 @@ class GameScreen extends StatelessWidget {
       title: const Text("Snaake"),
       actions: <Widget>[
         BlocBuilder<GameBloc, GameState>(
-          condition: (before, after) => before.status != after.status,
           builder: (context, state) {
             switch (state.status) {
               case Status.pause:
@@ -92,9 +92,9 @@ class GameScreen extends StatelessWidget {
     );
 
     final _gameRenderer = GameRenderer(
-      tileSize: tileSize,
-      screen: screen,
-      board: board,
+      screen,
+      board,
+      tileSize,
     );
 
     bloc.add(OnBoardCreatedEvent(board));
@@ -125,18 +125,19 @@ class GameScreen extends StatelessWidget {
           },
           child: BlocListener<GameBloc, GameState>(
             listener: (context, state) {
-              _gameRenderer.updateFood(state.food);
-              _gameRenderer.updateSnake(state.snake);
+              _gameRenderer.updateFood(state.food!);
+              _gameRenderer.updateSnake(state.snake!);
             },
             child: BlocBuilder<GameBloc, GameState>(
-              condition: (before, current) => before.status != current.status,
               builder: (context, state) {
                 final bloc = BlocProvider.of<GameBloc>(context);
                 return state.status == Status.loading
                     ? LoadingWidget()
                     : Stack(
                         children: <Widget>[
-                          _gameRenderer.widget,
+                          GameWidget<GameRenderer>(
+                            game: _gameRenderer,
+                          ),
                           if (state.status == Status.pause)
                             PauseWidget(
                               text: 'Tap to resume',

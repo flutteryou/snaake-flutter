@@ -11,10 +11,10 @@ class PauseWidget extends StatelessWidget {
   });
 
   /// On tap widget callback.
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
 
   /// The text to be shown.
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class PauseWidget extends StatelessWidget {
         color: GameColors.pauseBackground,
         child: Center(
           child: Text(
-            text,
+            text ?? '',
             style: TextStyle(
               fontSize: 18,
             ),

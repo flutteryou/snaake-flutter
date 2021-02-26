@@ -15,17 +15,17 @@ class GameRenderer extends Game {
   /// Convenient constructor.
   /// It requires the [screen] real dimension, the [board] size,
   /// and the [tileSize] used to render the food and snake.
-  GameRenderer({
-    @required this.screen,
-    @required this.board,
-    @required this.tileSize,
-  }) {
+  GameRenderer(
+    this.screen,
+    this.board,
+    this.tileSize,
+  ) {
     _food = BoardComponent('food/food.png', tileSize);
     _snake = SnakeComponent(tileSize);
   }
 
   /// The real screen size.
-  final Rect screen;
+  Rect screen = Rect.zero;
 
   /// The board size.
   final Board board;
@@ -33,16 +33,14 @@ class GameRenderer extends Game {
   /// The tile size used to render the food and snake.
   final double tileSize;
 
-  BoardComponent _food;
-  SnakeComponent _snake;
+  late BoardComponent _food;
+  late SnakeComponent _snake;
 
   /// Called to update the [Food] position.
   void updateFood(Food food) {
-    if (food != null) {
-      _food
-        ..x = food.x * tileSize
-        ..y = food.y * tileSize;
-    }
+    _food
+      ..x = food.x * tileSize
+      ..y = food.y * tileSize;
   }
 
   /// Called to update the [Snake] positions.
@@ -96,7 +94,7 @@ class GameRenderer extends Game {
   void update(double t) {}
 
   @override
-  void resize(Size size) {
-    super.resize(Size(screen.width, screen.height));
+  void onResize(Vector2 size) {
+    super.onResize(Vector2(screen.width, screen.height));
   }
 }

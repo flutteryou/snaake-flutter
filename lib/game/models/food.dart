@@ -5,11 +5,11 @@ import '../models/vec2d.dart';
 /// Represents a Snake food.
 class Food extends Vec2d {
   /// Convenient constructor.
-  Food({
-    @required int x,
-    @required int y,
-    @required this.score,
-  }) : super(x, y);
+  Food(
+    int x,
+    int y,
+    this.score,
+  ) : super(x, y);
 
   /// If eaten, player will earn [score] value.
   final int score;
